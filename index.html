@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>A Casa da Rede</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: tudo em uma única tela, sem rolar a página. Duas casas lado a lado com a rua e o túnel VPN no meio; texto ao lado (telas largas) ou embaixo (celular). */
+:root{
+  --bg:#e9eff6; --ink:#15213b; --muted:#53617b; --card:#ffffff; --line:#c5d1e2; --code:#eef3f9;
+  --sky:#d3e5f6; --sky2:#e9f2fb; --earth:#cfc3ad; --earth-line:#b5a78b;
+  --roof:#3b5a86; --on-bg:#ffe39a; --on-ring:#d99a00; --ico-bg:#e3ebf6;
+  --tunnel:#12a58c; --tunnel-ink:#0b6f5f; --tunnel-soft:rgba(18,165,140,.16);
+  --stamp:#e4572e; --accent:#2b59d9; --accent-ink:#ffffff;
+  --env-fill:#fff7e6; --env-line:#1b2742;
+  --shadow:0 1px 0 rgba(21,33,59,.04),0 10px 28px rgba(21,33,59,.08);
+  --f-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1526; --ink:#e7edfa; --muted:#98a7c4; --card:#16233b; --line:#2b3c5e; --code:#101b30;
+    --sky:#13213a; --sky2:#0f1a2f; --earth:#2a251d; --earth-line:#40382b;
+    --roof:#5a7fb3; --on-bg:#4b3a10; --on-ring:#f2b632; --ico-bg:#21324f;
+    --tunnel:#2fd1b3; --tunnel-ink:#6fe6cf; --tunnel-soft:rgba(47,209,179,.18);
+    --accent:#7fa3ff; --accent-ink:#0d1526; --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1526; --ink:#e7edfa; --muted:#98a7c4; --card:#16233b; --line:#2b3c5e; --code:#101b30;
+  --sky:#13213a; --sky2:#0f1a2f; --earth:#2a251d; --earth-line:#40382b;
+  --roof:#5a7fb3; --on-bg:#4b3a10; --on-ring:#f2b632; --ico-bg:#21324f;
+  --tunnel:#2fd1b3; --tunnel-ink:#6fe6cf; --tunnel-soft:rgba(47,209,179,.18);
+  --accent:#7fa3ff; --accent-ink:#0d1526; --shadow:none; color-scheme:dark;
+}
+/* tokens da casa: paredes, telhado, chaminé, fundação, grama, asfalto, céu */
+:root{
+  --wall:#f6eddc; --wall2:#eadfc7; --frame:#b9a27d; --floor:#a9825a; --floor2:#94703f;
+  --roof2:#2c4870; --roof-ln:rgba(0,0,0,.16); --chim:#b4503a; --chim2:#8f3d2b;
+  --stone:#a9a69c; --stone2:#8f8c82;
+  --grass:#6fb25a; --soil2:#bcae93;
+  --asphalt:#8b95a8; --dash:#f4f6fb; --cloud:rgba(255,255,255,.85); --sun:#ffd34d; --sun-glow:rgba(255,211,77,.34);
+  --glass:#cfe6f8; --glass2:#a9cdea;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --wall:#1d2b46; --wall2:#223253; --frame:#51463a; --floor:#4a3826; --floor2:#3a2b1c;
+    --roof2:#46689a; --roof-ln:rgba(0,0,0,.28); --chim:#9a4632; --chim2:#7a3626;
+    --stone:#4a4e5a; --stone2:#3b3f4b;
+    --grass:#2f7a52; --soil2:#1f1b15;
+    --asphalt:#3a4660; --dash:#9fb0cf; --cloud:rgba(180,200,235,.16); --sun:#e8eefc; --sun-glow:rgba(200,215,255,.2);
+    --glass:#2d4a73; --glass2:#3d608f;
+  }
+}
+:root[data-theme="dark"]{
+  --wall:#1d2b46; --wall2:#223253; --frame:#51463a; --floor:#4a3826; --floor2:#3a2b1c;
+  --roof2:#46689a; --roof-ln:rgba(0,0,0,.28); --chim:#9a4632; --chim2:#7a3626;
+  --stone:#4a4e5a; --stone2:#3b3f4b;
+  --grass:#2f7a52; --soil2:#1f1b15;
+  --asphalt:#3a4660; --dash:#9fb0cf; --cloud:rgba(180,200,235,.16); --sun:#e8eefc; --sun-glow:rgba(200,215,255,.2);
+  --glass:#2d4a73; --glass2:#3d608f;
+}
+@property --glow{syntax:"<color>";inherits:false;initial-value:rgba(255,214,90,0)}
+:root{--glass-on:#ffeaa6;--glass2-on:#ffd873;--star-o:0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--glass-on:#8a7236;--glass2-on:#a98c45;--star-o:.9}}
+:root[data-theme="dark"]{--glass-on:#8a7236;--glass2-on:#a98c45;--star-o:.9}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;overflow-x:hidden;overflow-y:auto;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{min-height:100%;max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding-block:12px 10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* cabeçalho */
+.top{flex:none;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(1.3rem,3vw,1.9rem);line-height:1.05;margin:0;letter-spacing:-.01em}
+.sub{display:none;margin:4px 0 0;color:var(--muted)}
+.parts{display:flex;flex-wrap:wrap;gap:4px;background:var(--code);border:1px solid var(--line);border-radius:12px;padding:4px}
+.part{flex:1 1 auto;border:0;background:transparent;color:var(--muted);padding:7px 12px;border-radius:9px;font:600 .8rem var(--f-body);cursor:pointer;text-align:left}
+.part.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+/* grade principal: cena + painel */
+.layout{flex:1 1 0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(200px,1fr);gap:10px}
+@media(min-width:1200px){
+  .wrap{height:100%}
+  .layout{flex:1;min-height:0;grid-template-columns:minmax(0,1fr) 360px;grid-template-rows:minmax(0,1fr);gap:16px;align-items:start}
+  .scene,.panel{height:100%;max-height:640px;align-self:start}
+}
+@media(min-width:800px) and (min-height:780px){.sub{display:block}}
+
+/* cena */
+.scene{
+  --roofh:48px;--earthh:72px;--tw:20px;--gw:84px;--gx:4px;--hw:66px;--hh:60px;--aw:34px;--roadh:10px;--lw:46px;--lh:34px;--linkw:200px;--lane:64px;
+  --cx:calc(var(--gx) + var(--gw) / 2);
+  position:relative;overflow:hidden;border:1px solid var(--line);border-radius:20px;padding-top:14px;
+  background:linear-gradient(var(--sky),var(--sky2));display:flex;align-items:stretch;box-shadow:var(--shadow)
+}
+.col{position:relative;z-index:1;display:flex;flex-direction:column;flex:1 1 0;min-width:0;min-height:0;transition:opacity .6s .1s,flex-basis .85s cubic-bezier(.65,0,.35,1),flex-grow .85s cubic-bezier(.65,0,.35,1)}
+.col.link{flex:0 0 var(--linkw);overflow:hidden}
+.col.b{overflow:hidden}
+.house{position:relative;margin-inline:auto;width:calc(100% - 24px);max-width:440px;flex:1;min-height:0;display:flex;flex-direction:column}
+.house::before{content:"";position:absolute;z-index:0;left:68%;top:calc(var(--roofh) * .05);width:calc(var(--roofh) * .3);height:calc(var(--roofh) * .72);background:linear-gradient(90deg,var(--chim),var(--chim2));border-top:calc(var(--roofh) * .08) solid var(--chim2);border-radius:2px 2px 0 0}
+.b .house::before{left:auto;right:68%}
+.house::after{content:"";flex:none;height:8px;margin-inline:-2px;background:repeating-linear-gradient(90deg,transparent 0 18px,rgba(0,0,0,.14) 18px 19px),linear-gradient(var(--stone),var(--stone2));border-radius:3px 3px 0 0}
+.skyfx{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.stars{position:absolute;inset:0;opacity:var(--star-o);transition:opacity .9s;background:radial-gradient(1.6px 1.6px at 8% 18%,#fff,transparent),radial-gradient(1.2px 1.2px at 22% 8%,#fff,transparent),radial-gradient(1.4px 1.4px at 36% 24%,#fff,transparent),radial-gradient(1.2px 1.2px at 52% 12%,#dbe6ff,transparent),radial-gradient(1.6px 1.6px at 66% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 7%,#fff,transparent),radial-gradient(1.4px 1.4px at 90% 26%,#dbe6ff,transparent),radial-gradient(1.2px 1.2px at 14% 34%,#fff,transparent),radial-gradient(1.2px 1.2px at 60% 36%,#fff,transparent),radial-gradient(1.4px 1.4px at 94% 44%,#fff,transparent),radial-gradient(1.2px 1.2px at 44% 5%,#fff,transparent),radial-gradient(1.2px 1.2px at 30% 40%,#dbe6ff,transparent),radial-gradient(1.8px 1.8px at 46% 30%,#fff,transparent),radial-gradient(1.4px 1.4px at 53% 46%,#dbe6ff,transparent),radial-gradient(1.6px 1.6px at 49% 58%,#fff,transparent),radial-gradient(1.4px 1.4px at 41% 20%,#fff,transparent),radial-gradient(1.4px 1.4px at 57% 64%,#fff,transparent),radial-gradient(1.8px 1.8px at 3% 50%,#fff,transparent),radial-gradient(1.4px 1.4px at 97% 62%,#dbe6ff,transparent)}
+.orb{position:absolute;z-index:6;right:18px;top:8px;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;box-shadow:0 0 0 6px var(--sun-glow),0 0 28px 8px var(--sun-glow);transition:transform .25s;view-transition-name:orb}
+.orb:hover{transform:scale(1.1)}
+.orb svg{position:absolute;inset:3px;width:30px;height:30px;transition:transform .8s cubic-bezier(.65,0,.35,1),opacity .5s}
+.o-moon{opacity:0;transform:rotate(-120deg) scale(.2)}
+.orb[data-mode="night"] .o-sun{opacity:0;transform:rotate(120deg) scale(.2)}
+.orb[data-mode="night"] .o-moon{opacity:1;transform:none}
+.o-sun path{animation:spin 40s linear infinite;transform-origin:12px 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-old(root){z-index:1}
+::view-transition-new(root){z-index:2}
+::view-transition-group(orb){animation-duration:.9s}
+::view-transition-old(orb){animation:orbOut .7s cubic-bezier(.65,0,.35,1) both;mix-blend-mode:normal}
+::view-transition-new(orb){animation:orbIn .8s cubic-bezier(.65,0,.35,1) both;mix-blend-mode:normal}
+@keyframes orbOut{to{transform:rotate(120deg) scale(.2);opacity:0}}
+@keyframes orbIn{from{transform:rotate(-120deg) scale(.2);opacity:0}}
+html.tswitch *,html.tswitch *::before,html.tswitch *::after{transition:none!important}
+html.tfade *:not(.letter),html.tfade *::before,html.tfade *::after{transition:background-color .7s,color .7s,border-color .7s,box-shadow .7s,fill .7s,stroke .7s,opacity .7s!important}
+.cloud{position:absolute;height:14px;border-radius:99px;background:var(--cloud)}
+.cloud::before,.cloud::after{content:"";position:absolute;bottom:5px;border-radius:50%;background:var(--cloud)}
+.cloud::before{left:10px;width:18px;height:18px}
+.cloud::after{left:22px;width:13px;height:13px}
+.c1{left:12px;top:14px;width:46px}
+.c2{right:78px;top:34px;width:34px;opacity:.75}
+.roof{position:relative;z-index:1;flex:none;height:var(--roofh);margin-inline:-8px;background:repeating-linear-gradient(180deg,var(--roof-ln) 0 1.5px,transparent 1.5px 8px),linear-gradient(90deg,var(--roof2),var(--roof) 50%,var(--roof2));clip-path:polygon(50% 0,100% 100%,0 100%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;color:#fff;font:700 .82rem var(--f-display);letter-spacing:.02em;white-space:nowrap;text-shadow:0 1px 0 rgba(0,0,0,.3)}
+.roof::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--roof2);box-shadow:0 -1px 0 rgba(255,255,255,.18)}
+.room{--ww:72px;--wh:42px;position:relative;flex:1 1 0;min-height:60px;display:flex;align-items:center;gap:10px;padding:6px calc(var(--lane) + 2px) 10px 12px;background-color:var(--wall);background-image:radial-gradient(ellipse 60% 105% at 50% 0,var(--glow),transparent 72%),linear-gradient(to top,var(--floor) 0 6px,var(--floor2) 6px 7px,transparent 7px),repeating-linear-gradient(90deg,transparent 0 20px,var(--wall2) 20px 22px);border-left:6px solid var(--frame);border-right:6px solid var(--frame);cursor:pointer;transition:background-color .35s,box-shadow .35s,--glow .35s;overflow:hidden}
+.b .room{padding:6px 12px 10px calc(var(--lane) + 2px)}
+.room.on{--glow:rgba(255,214,90,.42)}
+.room::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--frame);box-shadow:0 2px 3px rgba(0,0,0,.14)}
+.room::after{content:"";position:absolute;left:50%;top:calc(50% - 3px);z-index:0;opacity:.5;width:var(--ww);height:var(--wh);margin:calc(var(--wh) / -2) 0 0 calc(var(--ww) / -2);border:3px solid var(--frame);border-radius:7px 7px 2px 2px;background:linear-gradient(90deg,transparent calc(50% - 1px),var(--frame) calc(50% - 1px) calc(50% + 1px),transparent calc(50% + 1px)),linear-gradient(0deg,transparent calc(50% - 1px),var(--frame) calc(50% - 1px) calc(50% + 1px),transparent calc(50% + 1px)),linear-gradient(160deg,var(--glass),var(--glass2));box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);transition:box-shadow .35s}
+.room.on::after{--glass:var(--glass-on);--glass2:var(--glass2-on);box-shadow:0 0 16px 3px rgba(255,214,90,.5),inset 0 0 0 1px rgba(255,255,255,.5)}
+.lamp{position:absolute;left:50%;top:5px;width:22px;height:28px;margin-left:-11px;z-index:3;pointer-events:none}
+.lamp svg{display:block;width:100%;height:100%;overflow:visible}
+.lamp .cord{stroke:var(--frame);stroke-width:1.6}
+.lamp .sock{fill:var(--muted)}
+.lamp .bulb{fill:var(--glass);stroke:var(--frame);stroke-width:1.5;transition:fill .3s,filter .3s}
+.lamp .fil{fill:none;stroke:var(--frame);stroke-width:1}
+.room.on .lamp .bulb{fill:#ffe27a;stroke:#e0a800;filter:drop-shadow(0 0 5px #ffd23f) drop-shadow(0 0 12px rgba(255,210,63,.85))}
+.room.on .lamp .fil{stroke:#c98a00}
+.ico{flex:none;width:38px;height:38px;border-radius:11px;background:linear-gradient(150deg,var(--card),var(--ico-bg));border:1.5px solid var(--line);box-shadow:0 2px 0 rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.5);display:grid;place-items:center;color:var(--ink)}
+.ico svg{width:21px;height:21px}
+.txt{min-width:0}
+.ico,.txt{position:relative;z-index:1}
+.txt small{display:block;font-size:.64rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.txt b{display:block;font:700 .98rem/1.2 var(--f-display)}
+.txt span{display:block;font-size:.78rem;line-height:1.25;color:var(--muted)}
+.sh{display:none}
+i.lg,i.sh{font-style:normal}
+.anchor{position:absolute;width:0;height:0;pointer-events:none}
+.earth{flex:none;position:relative;height:var(--earthh);background-color:var(--earth);background-image:radial-gradient(var(--earth-line) 1.4px,transparent 1.7px),radial-gradient(var(--earth-line) 2.4px,transparent 2.8px),linear-gradient(var(--earth),var(--soil2));background-size:22px 22px,57px 41px,100% 100%;background-position:0 0,9px 14px,0 0}
+.earth::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:radial-gradient(circle at 8px 0,var(--grass) 6px,transparent 6.6px) 0 0/16px 10px repeat-x,linear-gradient(var(--grass),var(--grass)) 0 0/100% 4px no-repeat;pointer-events:none}
+
+/* rua e portões */
+.link .sky{position:relative;flex:1;min-height:0}
+.link .sky::after{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--roadh);background:repeating-linear-gradient(90deg,var(--dash) 0 12px,transparent 12px 26px) center/100% 2px no-repeat,var(--asphalt);border-top:2px solid rgba(255,255,255,.35)}
+.watch{position:absolute;left:50%;top:6px;transform:translateX(-50%);width:min(150px,100%);display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+.watch small{font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.watch svg{width:42px;height:53px;color:var(--muted)}
+.bubble{position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1);max-width:150px;padding:5px 9px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:.72rem;line-height:1.3;opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.bubble.show{opacity:1;transform:none}
+.bubble::after{content:"";position:absolute;top:-5px;left:50%;width:8px;height:8px;background:var(--card);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:translateX(-50%) rotate(45deg)}
+.gate{position:absolute;bottom:var(--roadh);width:var(--gw);display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.gate.ga{left:var(--gx)}.gate.gb{right:var(--gx)}
+.hut{position:relative;width:var(--hw);height:var(--hh)}
+.hut svg{display:block;overflow:visible;width:100%;height:100%;transition:filter .3s}
+.gate.on .hut svg{filter:drop-shadow(0 0 6px var(--on-ring))}
+.arm{position:absolute;top:60%;width:var(--aw);height:5px;border-radius:3px;background:repeating-linear-gradient(90deg,var(--stamp) 0 6px,#fff 6px 12px);transition:transform .5s}
+.ga .arm{left:calc(100% - 4px);transform-origin:left center}
+.gb .arm{right:calc(100% - 4px);transform-origin:right center}
+[data-gates="open"] .ga .arm{transform:rotate(-78deg)}
+[data-gates="open"] .gb .arm{transform:rotate(78deg)}
+.gate small{font-size:.64rem;color:var(--muted);line-height:1.15}
+.st{font-style:normal;font-size:.62rem;font-weight:600;padding:1px 7px;border-radius:99px;background:var(--code);color:var(--muted);border:1px solid var(--line)}
+[data-gates="open"] .st{background:var(--tunnel-soft);color:var(--tunnel-ink);border-color:transparent}
+.u{position:absolute;left:calc(var(--cx) - var(--tw) / 2);right:calc(var(--cx) - var(--tw) / 2);top:0;bottom:14px;border:var(--tw) solid var(--tunnel);border-top:0;border-radius:0 0 16px 16px;opacity:0;transition:opacity .6s,filter .4s}
+.uflow{position:absolute;left:calc(var(--cx) - 1px);right:calc(var(--cx) - 1px);top:0;bottom:calc(14px + var(--tw) / 2 - 1px);border:2px dashed rgba(255,255,255,.7);border-top:0;border-radius:0 0 8px 8px;opacity:0;transition:opacity .6s}
+.tlbl{position:absolute;left:50%;top:6px;transform:translateX(-50%);text-align:center;font-size:.66rem;line-height:1.2;color:var(--tunnel-ink);opacity:0;transition:opacity .6s;white-space:nowrap}
+.tlbl b{display:block;font-size:.7rem}
+.u.on{filter:drop-shadow(0 0 7px var(--tunnel))}
+[data-stage="3"] .u,[data-stage="3"] .uflow,[data-stage="3"] .tlbl{opacity:1}
+[data-stage="1"] .col.link{flex-basis:0px;opacity:0;pointer-events:none}
+[data-stage="1"] .col.b{flex-grow:0;opacity:0;pointer-events:none}
+
+/* carta */
+.letter{position:absolute;left:0;top:0;width:var(--lw);height:var(--lh);z-index:5;pointer-events:none;opacity:0;transition:transform var(--td,.75s) cubic-bezier(.5,0,.2,1),opacity .3s}
+.letter .env{display:block;width:100%;height:100%;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25))}
+.seal{position:absolute;inset:-6px;border:3px solid var(--tunnel);border-radius:12px;background:radial-gradient(circle,#fff 1.4px,transparent 2px) left 2px top 2px/6px 6px no-repeat,radial-gradient(circle,#fff 1.4px,transparent 2px) right 2px top 2px/6px 6px no-repeat,radial-gradient(circle,#fff 1.4px,transparent 2px) left 2px bottom 2px/6px 6px no-repeat,radial-gradient(circle,#fff 1.4px,transparent 2px) right 2px bottom 2px/6px 6px no-repeat,var(--tunnel-soft);box-shadow:0 0 12px var(--tunnel),inset 0 0 0 1.5px rgba(255,255,255,.45);opacity:0;transform:scale(.8);transition:opacity .3s,transform .3s}
+.lk{position:absolute;right:-14px;top:-14px;width:20px;height:20px;border-radius:50%;background:var(--tunnel);color:#fff;display:grid;place-items:center;opacity:0;transition:opacity .3s}
+.letter.sealed .seal{opacity:1;transform:none}
+.letter.sealed .lk{opacity:1}
+.cap{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);padding:1px 8px;border-radius:99px;background:var(--ink);color:var(--bg);font-size:.64rem;font-weight:600;white-space:nowrap}
+.cap:empty{display:none}
+
+/* painel */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);min-width:0;min-height:200px;overflow:auto;contain:size}
+.eyebrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.badge{padding:2px 10px;border-radius:99px;background:var(--code);color:var(--muted);border:1px solid var(--line)}
+.badge.p2{background:var(--tunnel-soft);color:var(--tunnel-ink);border-color:transparent}
+.stepno{color:var(--accent)}
+.panel h2{font:700 1.3rem/1.15 var(--f-display);margin:10px 0 8px;text-wrap:balance}
+.panel p{margin:0 0 10px;max-width:65ch;line-height:1.5}
+.map{background:var(--code);border-radius:10px;padding:8px 12px;font-size:.86rem;margin-bottom:10px}
+.blk{margin-bottom:10px}
+.lbl{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+pre{margin:0;background:var(--code);border-radius:10px;padding:8px 12px;overflow-x:auto;font:400 .78rem/1.45 var(--f-mono)}
+pre.cipher{color:var(--tunnel-ink);border:1px dashed var(--tunnel)}
+pre.plain{font-family:var(--f-body);font-size:.9rem;font-weight:600}
+.addr{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.addr div{background:var(--code);border-radius:10px;padding:7px 12px;min-width:0}
+.addr code{display:block;font:500 .95rem var(--f-mono)}
+.addr small{color:var(--muted);font-size:.72rem}
+.note{font-size:.76rem;color:var(--muted);margin:0 0 4px}
+.browser{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:6px}
+.url{background:var(--code);padding:6px 12px;font:400 .76rem var(--f-mono);border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.pg{padding:12px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.tile span{display:block;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tile strong{display:block;font:700 1.7rem/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.tile small{color:var(--muted);font-size:.72rem}
+.spark{width:90px;height:30px;flex:none}
+.todo{margin:0 0 10px;padding-left:1.25em;display:grid;gap:4px;font-size:.9rem}
+.lay{background:var(--tunnel-soft);border-radius:12px;padding:8px 12px}
+.lay strong{font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--tunnel-ink)}
+.lay p{margin:3px 0 0;font-size:.9rem}
+
+/* barra de navegação */
+.bar{flex:none;position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:9px 12px;box-shadow:0 6px 24px rgba(0,0,0,.1)}
+.bar .now{flex:1 1 100%;min-width:0;font-size:.84rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .now em{font-style:normal;color:var(--accent)}
+.btn{font:600 .88rem var(--f-body);border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.play{display:inline-flex;align-items:center;gap:8px;min-width:128px;justify-content:center}
+.play svg{width:14px;height:14px;flex:none}
+.cfg{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
+.cfg input{width:62px;font:600 .88rem var(--f-body);color:var(--ink);background:var(--code);border:1.5px solid var(--line);border-radius:10px;padding:7px 6px;text-align:center}
+.prog{position:absolute;left:14px;right:14px;bottom:0;height:3px;border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;width:100%;background:var(--accent);transform-origin:left;transform:scaleX(0);opacity:0}
+.prog i.run{opacity:1;animation:fill var(--d,6s) linear forwards}
+@keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.dots{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap}
+.dot{width:11px;height:11px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer;transition:transform .2s,background .2s}
+.dot.gap{margin-left:10px}
+.dot.on{background:var(--accent);transform:scale(1.3)}
+@media(min-width:1200px){.bar .now{flex:1 1 0}}
+
+/* tablet e janela média: casas empilhadas sobre o texto, salas com altura própria */
+@media(max-width:1199px){.room{flex:none;height:clamp(86px,11vh,104px);min-height:0}}
+/* altura curta (notebook): enxuga o texto das salas */
+@media(min-width:1200px) and (max-height:700px){.txt span{display:none}.panel p{font-size:.92rem}}
+@media(min-width:1200px) and (max-height:600px){.txt small{display:none}.roof{font-size:.75rem}}
+
+/* celular: casas compactas em três colunas, texto embaixo */
+@media(max-width:799px){
+  .scene{--roofh:30px;--earthh:52px;--tw:12px;--gw:52px;--gx:2px;--hw:38px;--hh:35px;--aw:20px;--roadh:8px;--lw:32px;--lh:24px;--linkw:104px;--lane:38px;padding-top:10px}
+  .house{width:calc(100% - 12px)}
+  .roof{font-size:.62rem;padding-bottom:5px;margin-inline:-4px}
+  .roof::after{height:3px}
+  .lamp{top:4px;transform:scale(.62);transform-origin:top center}
+  .room{--ww:36px;--wh:26px;flex:none;height:56px;min-height:0;gap:6px;padding:4px calc(var(--lane) + 2px) 8px 6px;border-left-width:4px;border-right-width:4px}
+  .room::after{display:none}
+  .cloud{display:none}
+  .orb{width:26px;height:26px;right:6px;top:5px;box-shadow:0 0 0 4px var(--sun-glow),0 0 16px 5px var(--sun-glow)}
+  .orb svg{inset:2px;width:22px;height:22px}
+  .b .room{padding:4px 6px 4px calc(var(--lane) + 2px)}
+  .ico{width:26px;height:26px;border-radius:8px}
+  .ico svg{width:16px;height:16px}
+  .txt small,.txt span{display:none}
+  .txt b{font-size:.74rem}
+  .lg{display:none}.sh{display:inline}
+  .watch{top:4px;gap:3px}
+  .watch small{display:none}
+  .watch svg{width:26px;height:34px}
+  .bubble{max-width:96px;padding:3px 6px;font-size:.58rem;border-radius:8px}
+  .gate small{font-size:.54rem}
+  .st{font-size:.52rem;padding:0 5px}
+  .tlbl{display:none}
+  .cap{font-size:.56rem;padding:0 6px;top:calc(100% + 7px)}
+  .seal{inset:-5px}
+  .lk{width:16px;height:16px;right:-11px;top:-11px}
+  .lk svg{width:9px;height:9px}
+  .panel{padding:12px 14px}
+  .panel h2{font-size:1.08rem;margin:8px 0 6px}
+  .panel p{font-size:.86rem;margin-bottom:8px;line-height:1.45}
+  .map{display:none}
+  pre{font-size:.7rem;padding:6px 10px}
+  .todo,.lay p{font-size:.84rem}
+  .bar{padding:8px 10px;gap:6px 8px}
+  .btn{padding:7px 11px;font-size:.82rem}
+  .play{min-width:0}
+  .play span{display:none}
+  .dots{display:none}
+  .cfgt{display:none}
+  .cfg{margin-left:auto}
+  .cfg input{width:54px;padding:6px 4px}
+}
+@media(max-width:380px){
+  .scene{--linkw:92px;--lane:32px}
+  .txt{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+</style>
+
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div>
+      <h1>A casa da rede</h1>
+      <p class="sub">Cada andar é um computador. A carta é o JSON. Clique nos andares ou use os botões.</p>
+    </div>
+    <div class="parts" id="parts">
+      <button class="part on" data-part="0" type="button">Parte 1 · Dentro de casa</button>
+      <button class="part" data-part="1" type="button">Parte 2 · Casa do colega (VPN)</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <section class="scene" id="scene" data-stage="1" data-gates="closed" aria-label="Ilustração das casas">
+
+      <div class="skyfx" aria-hidden="true"><i class="stars"></i><i class="cloud c1"></i><i class="cloud c2"></i></div>
+
+      <button class="orb" id="orb" type="button" data-mode="day" aria-label="Mudar para a noite" title="Alternar dia e noite">
+        <svg class="o-sun" viewBox="0 0 24 24" fill="none" stroke="#f6b021" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="#ffd23f" stroke="#f6b021" stroke-width="1.4"/><path d="M12 2.2v2.2M12 19.6v2.2M4.9 4.9l1.55 1.55M17.55 17.55l1.55 1.55M2.2 12h2.2M19.6 12h2.2M6.45 17.55L4.9 19.1M19.1 4.9l-1.55 1.55"/></svg>
+        <svg class="o-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" fill="#e8eefc" stroke="#b9c8ea" stroke-width="1"/></svg>
+      </button>
+
+      <div class="col a">
+        <div class="house">
+          <div class="roof">Nossa rede</div>
+          <div class="room" data-hl="A2" data-go="3" tabindex="0" role="button">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="2" fill="var(--accent)" fill-opacity=".16"/><path d="M8 20.5h8M12 16.5v4"/><path d="M6 13l3.2-3.6 2.8 2.2L17 7" stroke="var(--accent)" stroke-width="2.1"/><circle cx="17" cy="7" r="1.2" fill="var(--accent)" stroke="none"/></svg></div>
+            <div class="txt"><small>2º andar · mostra</small><b><i class="lg">Computador 3</i><i class="sh">C3</i></b><span>Sala do painel (dashboard)</span></div>
+            <i class="anchor" data-a="A2" style="left:calc(100% - var(--lane) / 2);top:50%"></i>
+          </div>
+          <div class="room" data-hl="A1" data-go="2" tabindex="0" role="button">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l3-8h12l3 8v6H3z" fill="var(--on-ring)" fill-opacity=".24"/><path d="M3 13h5l1 3h6l1-3h5"/><path d="M9.5 8.5h5" stroke-width="1.5"/></svg></div>
+            <div class="txt"><small>1º andar · guarda</small><b><i class="lg">Computador 2</i><i class="sh">C2</i></b><span>Portaria / caixa de correio</span></div>
+            <i class="anchor" data-a="A1" style="left:calc(100% - var(--lane) / 2);top:50%"></i>
+          </div>
+          <div class="room" data-hl="A0" data-go="1" tabindex="0" role="button">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 20.5L5.6 16 16.5 5.2l2.8 2.8L8.4 18.9z" fill="var(--stamp)" fill-opacity=".28"/><path d="M13.5 8.3l2.8 2.8"/><path d="M4.5 20.5L5.6 16l2.8 2.9z" fill="currentColor" stroke="none"/></svg></div>
+            <div class="txt"><small>Térreo · envia</small><b><i class="lg">Computador 1</i><i class="sh">C1</i></b><span>Escritório que escreve as cartas</span></div>
+            <i class="anchor" data-a="A0" style="left:calc(100% - var(--lane) / 2);top:50%"></i>
+          </div>
+        </div>
+        <div class="earth"></div>
+      </div>
+
+      <div class="col link">
+        <div class="sky">
+          <div class="watch">
+            <small>rua pública · internet</small>
+            <svg viewBox="0 0 44 56" fill="currentColor" aria-hidden="true"><path d="M3 55C3 36 9 28 17 28s14 8 14 27z"/><path d="M17 28l-4.5 7.5 4.5 19.5 4.5-19.5z" fill="var(--card)" fill-opacity=".4"/><circle cx="17" cy="17.5" r="8.5"/><path d="M5.5 12.8h23" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><path d="M10 12.5c0-6.5 3.6-9.5 7-9.5s7 3 7 9.5z" fill="var(--ink)"/><rect x="10" y="9" width="14" height="2.4" fill="var(--stamp)"/><circle cx="13.7" cy="18.4" r="1.4" fill="var(--card)"/><circle cx="20.3" cy="18.4" r="1.4" fill="var(--card)"/><circle cx="34" cy="31" r="7" fill="var(--sky2)" fill-opacity=".7" stroke="currentColor" stroke-width="2.4"/><path d="M39 36l4 5" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>
+            <div class="bubble" id="bubble"></div>
+          </div>
+          <div class="gate ga" data-hl="GA">
+            <div class="hut">
+              <svg viewBox="0 0 56 52" aria-hidden="true"><rect x="27" y="0" width="2" height="7" fill="var(--muted)"/><circle cx="28" cy="2.6" r="2.6" fill="var(--on-ring)"/><polygon points="4,21 28,7 52,21" fill="var(--roof)"/><rect x="2" y="19.5" width="52" height="4.5" rx="2" fill="var(--roof2)"/><rect x="8" y="25" width="40" height="25" rx="2.5" fill="var(--wall)" stroke="var(--frame)" stroke-width="2.5"/><rect x="12.5" y="29" width="14" height="10" rx="2" fill="var(--glass)" stroke="var(--frame)" stroke-width="1.8"/><path d="M19.5 29v10M12.5 34h14" stroke="var(--frame)" stroke-width="1.2"/><rect x="30.5" y="29" width="11.5" height="21" rx="2" fill="var(--tunnel)"/><path d="M36.2 33.5l3 1.2v2.6c0 2-1.4 3.2-3 3.9-1.6-.7-3-1.9-3-3.9v-2.6z" fill="#fff" fill-opacity=".88"/></svg>
+              <i class="arm"></i>
+              <i class="anchor" data-a="GA" style="left:50%;top:58%"></i>
+            </div>
+            <small><i class="lg">app VPN</i><i class="sh">app</i></small><em class="st">fechado</em>
+          </div>
+          <div class="gate gb" data-hl="GB">
+            <div class="hut">
+              <svg viewBox="0 0 56 52" aria-hidden="true"><rect x="27" y="0" width="2" height="7" fill="var(--muted)"/><circle cx="28" cy="2.6" r="2.6" fill="var(--on-ring)"/><polygon points="4,21 28,7 52,21" fill="var(--roof)"/><rect x="2" y="19.5" width="52" height="4.5" rx="2" fill="var(--roof2)"/><rect x="8" y="25" width="40" height="25" rx="2.5" fill="var(--wall)" stroke="var(--frame)" stroke-width="2.5"/><rect x="12.5" y="29" width="14" height="10" rx="2" fill="var(--glass)" stroke="var(--frame)" stroke-width="1.8"/><path d="M19.5 29v10M12.5 34h14" stroke="var(--frame)" stroke-width="1.2"/><rect x="30.5" y="29" width="11.5" height="21" rx="2" fill="var(--tunnel)"/><path d="M36.2 33.5l3 1.2v2.6c0 2-1.4 3.2-3 3.9-1.6-.7-3-1.9-3-3.9v-2.6z" fill="#fff" fill-opacity=".88"/></svg>
+              <i class="arm"></i>
+              <i class="anchor" data-a="GB" style="left:50%;top:58%"></i>
+            </div>
+            <small><i class="lg">servidor VPN</i><i class="sh">servidor</i></small><em class="st">fechado</em>
+          </div>
+        </div>
+        <div class="earth">
+          <div class="u" id="tun" data-hl="TUN"></div>
+          <div class="uflow"></div>
+          <div class="tlbl"><b>túnel VPN</b>criptografado</div>
+          <i class="anchor" data-a="TA" style="left:var(--cx);top:calc(var(--earthh) - 16px - var(--tw) / 2)"></i>
+          <i class="anchor" data-a="TB" style="left:calc(100% - var(--cx));top:calc(var(--earthh) - 16px - var(--tw) / 2)"></i>
+        </div>
+      </div>
+
+      <div class="col b">
+        <div class="house">
+          <div class="roof">Rede do colega</div>
+          <div class="room" data-hl="B2" data-go="8" tabindex="0" role="button">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="2" fill="var(--accent)" fill-opacity=".16"/><path d="M8 20.5h8M12 16.5v4"/><path d="M6 13l3.2-3.6 2.8 2.2L17 7" stroke="var(--accent)" stroke-width="2.1"/><circle cx="17" cy="7" r="1.2" fill="var(--accent)" stroke="none"/></svg></div>
+            <div class="txt"><small>2º andar · mostra</small><b><i class="lg">Computador 3</i><i class="sh">C3</i></b><span>Painel (dashboard) do colega</span></div>
+            <i class="anchor" data-a="B2" style="left:calc(var(--lane) / 2);top:50%"></i>
+          </div>
+          <div class="room" data-hl="B1" data-go="8" tabindex="0" role="button">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l3-8h12l3 8v6H3z" fill="var(--on-ring)" fill-opacity=".24"/><path d="M3 13h5l1 3h6l1-3h5"/><path d="M9.5 8.5h5" stroke-width="1.5"/></svg></div>
+            <div class="txt"><small>1º andar · guarda</small><b><i class="lg">Computador 2</i><i class="sh">C2</i></b><span>Portaria do colega</span></div>
+            <i class="anchor" data-a="B1" style="left:calc(var(--lane) / 2);top:50%"></i>
+          </div>
+          <div class="room" data-hl="B0" data-go="8" tabindex="0" role="button">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 20.5L5.6 16 16.5 5.2l2.8 2.8L8.4 18.9z" fill="var(--stamp)" fill-opacity=".28"/><path d="M13.5 8.3l2.8 2.8"/><path d="M4.5 20.5L5.6 16l2.8 2.9z" fill="currentColor" stroke="none"/></svg></div>
+            <div class="txt"><small>Térreo · envia</small><b><i class="lg">Computador 1</i><i class="sh">C1</i></b><span>Escritório do colega</span></div>
+            <i class="anchor" data-a="B0" style="left:calc(var(--lane) / 2);top:50%"></i>
+          </div>
+        </div>
+        <div class="earth"></div>
+      </div>
+
+      <div class="letter" id="letter" aria-hidden="true">
+        <i class="seal"></i>
+        <svg class="env" viewBox="0 0 46 34"><rect x="2" y="3" width="42" height="28" rx="4" fill="var(--env-fill)"/><rect x="4" y="5" width="38" height="24" rx="2.5" fill="none" stroke="var(--stamp)" stroke-width="1.6" stroke-dasharray="5 5"/><rect x="4" y="5" width="38" height="24" rx="2.5" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="5 5" stroke-dashoffset="5"/><rect x="2" y="3" width="42" height="28" rx="4" fill="none" stroke="var(--env-line)" stroke-width="2"/><path d="M3.5 6.5l19.5 14.5 19.5-14.5" fill="none" stroke="var(--env-line)" stroke-width="2" stroke-linejoin="round"/><circle cx="23" cy="21" r="3.6" fill="var(--stamp)"/><circle cx="23" cy="21" r="1.6" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1"/><rect x="32" y="20" width="8" height="8" rx="1" fill="var(--accent)"/><rect x="33.5" y="21.5" width="5" height="5" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="1"/></svg>
+        <span class="lk"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+        <span class="cap" id="cap"></span>
+      </div>
+    </section>
+
+    <section class="panel" aria-live="polite">
+      <div class="eyebrow"><span class="badge" id="badge"></span><span class="stepno" id="stepno"></span></div>
+      <h2 id="title"></h2>
+      <p id="text"></p>
+      <div class="map" id="map"></div>
+      <div id="blocks"></div>
+      <div id="extra"></div>
+    </section>
+  </div>
+
+  <nav class="bar" aria-label="Passos">
+    <div class="now" id="now"></div>
+    <button class="btn play" id="play" type="button" aria-pressed="true"><svg id="playIco" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"></svg><span id="playLbl">Pausar</span></button>
+    <button class="btn" id="prev" type="button">← Voltar</button>
+    <button class="btn primary" id="next" type="button">Próximo →</button>
+    <label class="cfg" for="secs"><span class="cfgt">Tempo por passo</span><input id="secs" type="number" min="2" max="30" step="1" value="4" inputmode="numeric" aria-label="Segundos por passo"><span>s</span></label>
+    <div class="dots" id="dots"></div>
+    <div class="prog" aria-hidden="true"><i id="progBar"></i></div>
+  </nav>
+</main>
+
+<script>
+(function(){
+var J1='{\n  "sensor": "temperatura",\n  "valor": 27.4,\n  "hora": "14:32:10"\n}';
+var REQ='{\n  "pedido": "abrir o painel",\n  "para": "192.168.0.25:3000",\n  "de": "Computador 3 (nossa casa)"\n}';
+var CIPHER='7f3a 9c1e 84b0 d2c5 51ee 790a\nb36f 4d08 a1c7 e29b 03f6 55d1\n(ilegível sem a chave)';
+var J2='{\n  "sensor": "umidade",\n  "valor": 61.2,\n  "hora": "14:35:02"\n}';
+
+var ADDR='<div class="addr"><div><code>192.168.0.25</code><small>número da casa dele (IP interno)</small></div><div><code>:3000</code><small>a sala certa (porta do painel)</small></div></div><p class="note">Valores de exemplo. Quem informa o endereço real é o colega ou a TI.</p>';
+var BROWSER='<div class="browser"><div class="url">http://192.168.0.25:3000</div><div class="pg"><div class="tile"><span>Umidade</span><strong>61,2 %</strong><small>14:35 · atualizado</small></div><svg class="spark" viewBox="0 0 96 32" aria-hidden="true"><polyline points="2,24 18,20 34,22 50,12 66,15 82,7 94,9" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="94" cy="9" r="3.2" fill="var(--accent)"/></svg></div></div><p class="note">Exemplo ilustrativo da dashboard do colega.</p>';
+var FINAL='<div class="lbl">Na prática</div><ol class="todo"><li>Conecte na VPN e deixe o aplicativo aberto.</li><li>Peça ao colega o endereço interno do painel (IP e porta) e confirme com a TI se o seu usuário tem permissão.</li><li>Cole o endereço no navegador.</li><li>Se não abrir, confira se a VPN está conectada, se o endereço está certo e se o painel dele está ligado.</li></ol><div class="lay"><strong>Em palavras simples</strong><p>VPN é um túnel protegido dentro da internet. Ele faz o seu computador falar com a rede de outro lugar como se estivesse lá, e ninguém no caminho consegue ler o que passa.</p></div>';
+
+var STEPS=[
+{part:0,t:"Visão geral",h:"A casa inteira é a nossa rede",
+ p:"Três computadores, três andares. Os dados andam entre eles em forma de cartas, sempre no mesmo formato: JSON. Ninguém pula andar: o Computador 1 fala com o 2, e o 3 também só fala com o 2.",
+ m:"Casa = rede · Andar = computador · Carta = mensagem JSON",
+ on:["A0","A1","A2"],stage:1,gates:"closed",seq:null},
+{part:0,t:"Passo 1",h:"O térreo escreve a carta",
+ p:"O Computador 1 pega os dados da API e coloca tudo dentro de um envelope padronizado: o JSON. Ele só escreve e despacha. Quem vai ler, ele não precisa saber.",
+ m:"Computador 1 → envia os dados da API",
+ blocks:[{l:"A carta (JSON)",x:J1}],on:["A0"],stage:1,gates:"closed",seq:[{a:"A0",c:"carta",s:false}]},
+{part:0,t:"Passo 2",h:"A carta sobe e fica na portaria",
+ p:"A carta chega ao 1º andar. O Computador 2 recebe, capta a mensagem e fica com ela guardada, como a caixa de correio do prédio. Ele é o ponto de encontro entre quem envia e quem consome.",
+ m:"Computador 1 → Computador 2 (recebe e guarda)",
+ blocks:[{l:"A carta (JSON)",x:J1}],on:["A1"],stage:1,gates:"closed",seq:[{a:"A0",c:"carta",s:false},{a:"A1"}]},
+{part:0,t:"Passo 3",h:"O andar de cima desce para buscar",
+ p:"Repare na direção: o Computador 2 não entrega nada lá em cima. É o Computador 3 que vai até a portaria, pega a carta, lê o JSON e desenha os números na dashboard.",
+ m:"Computador 3 → busca no Computador 2 → mostra na dashboard",
+ blocks:[{l:"A carta (JSON)",x:J1},{l:"O que aparece na dashboard",x:"Temperatura 27,4 °C às 14:32",k:"plain"}],on:["A2","A1"],stage:1,gates:"closed",seq:[{a:"A1",c:"carta",s:false},{a:"A2"}]},
+{part:1,t:"Passo 4",h:"E se o painel que eu quero estiver em outra casa?",
+ p:"A dashboard do colega fica na casa dele, que é outra rede. Entre as duas casas existe a rua pública, a internet. Carta aberta na rua qualquer um lê, e a porta da casa dele só abre para quem mora lá.",
+ m:"Outra casa = outra rede · Rua = internet",
+ on:["A2","B2"],stage:2,gates:"closed",bubble:"Carta aberta na rua? Qualquer um lê.",seq:[{a:"A2",c:"pedido",s:false}]},
+{part:1,t:"Passo 5",h:"A VPN é um túnel privado entre as duas casas",
+ p:"Em vez de mandar a carta pela rua, abrimos uma passagem subterrânea ligando a nossa casa à do colega. Quem passa pelo túnel é tratado como morador da outra rua. O endereço da casa dele só existe lá dentro, e o túnel é o que torna esse endereço alcançável.",
+ m:"VPN = túnel que liga duas redes pela internet",
+ extra:ADDR,on:["TUN"],stage:3,gates:"closed",seq:[{a:"A2",c:"pedido",s:false}]},
+{part:1,t:"Passo 6",h:"No portão, o crachá",
+ p:"Antes de entrar no túnel você se identifica: abre o aplicativo da VPN e entra com usuário e senha (muitas empresas pedem também um código no celular). A guarita da nossa casa é o app no seu computador, a da casa do colega é o servidor de VPN. Com o crachá certo, os dois portões abrem.",
+ m:"App VPN no seu computador ⇄ servidor de VPN da rede do colega",
+ on:["GA","GB"],stage:3,gates:"open",seq:[{a:"A2",c:"pedido",s:false}]},
+{part:1,t:"Passo 7",h:"A carta viaja lacrada pelo túnel",
+ p:"O Computador 3 escreve o pedido e a guarita coloca a carta dentro de um envelope blindado. Isso é a criptografia: quem observa a rua só vê um pacote ilegível indo para o portão do colega. Do outro lado, o portão abre o envelope blindado e entrega a carta original.",
+ m:"Carta → envelope blindado → túnel → portão do colega → carta aberta",
+ blocks:[{l:"Dentro do envelope",x:REQ},{l:"O que a rua enxerga",x:CIPHER,k:"cipher"}],
+ on:["GA","TUN","GB"],stage:3,gates:"open",bubble:"Só vejo um pacote lacrado.",
+ seq:[{a:"A2",c:"pedido",s:false},{a:"GA",s:true},{a:"TA"},{a:"TB"},{a:"GB"}]},
+{part:1,t:"Passo 8",h:"A casa do colega responde",
+ p:"O pedido chega ao painel dele. Esse painel faz o mesmo que o nosso: busca a carta na portaria dele, lê o JSON e desenha os números. A resposta, já como tela pronta, sai por onde entrou, de novo no envelope blindado.",
+ m:"Painel dele → busca na portaria dele → monta a tela",
+ blocks:[{l:"A carta guardada na portaria dele",x:J2}],
+ on:["GB","B2","B1"],stage:3,gates:"open",seq:[{a:"GB",c:"pedido",s:true},{a:"B2",s:false}]},
+{part:1,t:"Passo 9",h:"A resposta volta e aparece no seu navegador",
+ p:"A resposta volta pelo túnel, o portão da nossa casa abre o envelope e a dashboard do colega aparece no seu navegador, como se ele estivesse na sala ao lado. Fechou a VPN, o túnel fecha e o endereço dele deixa de responder.",
+ m:"Resposta → túnel → nosso portão → seu navegador",
+ extra:BROWSER,on:["B2","TUN","A2"],stage:3,gates:"open",
+ seq:[{a:"B2",c:"resposta",s:false},{a:"GB",s:true},{a:"TB"},{a:"TA"},{a:"GA"},{a:"A2",s:false}]},
+{part:1,t:"Resumo",h:"Duas casas, um túnel",
+ p:"É a mesma lógica de antes (escreve, guarda, busca e mostra), só que agora o pedido atravessa um túnel privado para chegar à casa do colega e voltar.",
+ m:"Seu painel → portão VPN → túnel lacrado → portão VPN → painel dele → de volta",
+ extra:FINAL,on:["A2","TUN","B2"],stage:3,gates:"open",seq:[{a:"A2",c:"resposta",s:false}]}
+];
+
+var scene=document.getElementById("scene"),letter=document.getElementById("letter"),cap=document.getElementById("cap");
+var cur=0,timers=[],lastOpen=null,extra=0;
+var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var secs=4,DUR=750,GAP=860;
+var playing=!reduce,playTimer=null;
+var PAUSE='<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>';
+var PLAY='<path d="M7 5v14l12-7z"/>';
+
+function dwell(){return secs*1000;}
+function timing(seq){
+  var moves=seq&&seq.length>1?seq.length-1:0;
+  GAP=moves?Math.min(860,Math.floor(Math.max(1200,secs*1000-extra)*0.75/moves)):860;
+  DUR=Math.round(GAP*0.87);
+  if(reduce){GAP=60;DUR=10;}
+  letter.style.setProperty("--td",DUR+"ms");
+}
+function schedule(){
+  clearTimeout(playTimer);
+  var pb=document.getElementById("progBar");
+  pb.classList.remove("run");
+  if(!playing)return;
+  void pb.offsetWidth;
+  var d=dwell(cur);
+  pb.style.setProperty("--d",d+"ms");
+  pb.classList.add("run");
+  playTimer=setTimeout(function(){cur=(cur+1)%STEPS.length;draw();},d);
+}
+function syncPlayUI(){
+  document.getElementById("play").setAttribute("aria-pressed",playing?"true":"false");
+  document.getElementById("playIco").innerHTML=playing?PAUSE:PLAY;
+  document.getElementById("playLbl").textContent=playing?"Pausar":"Reproduzir";
+  document.getElementById("play").setAttribute("aria-label",playing?"Pausar":"Reproduzir");
+}
+function setPlaying(v){
+  playing=v;syncPlayUI();
+  if(v)runSeq(STEPS[cur].seq);
+  schedule();
+}
+
+function pt(a){
+  var el=scene.querySelector('[data-a="'+a+'"]');
+  var r=el.getBoundingClientRect(),s=scene.getBoundingClientRect();
+  return{x:r.left-s.left-scene.clientLeft,y:r.top-s.top-scene.clientTop};
+}
+function setPos(a,anim){
+  var p=pt(a);
+  if(!anim){letter.style.transition="none";}
+  letter.style.transform="translate("+(p.x-letter.offsetWidth/2)+"px,"+(p.y-letter.offsetHeight/2)+"px)";
+  if(!anim){void letter.offsetWidth;letter.style.transition="";}
+}
+function apply(e){
+  if(e.c!==undefined)cap.textContent=e.c;
+  if(e.s!==undefined)letter.classList.toggle("sealed",!!e.s);
+}
+function clearTimers(){while(timers.length)clearTimeout(timers.pop());}
+function runSeq(seq){
+  clearTimers();
+  timing(seq);
+  if(!seq){letter.style.opacity=0;return;}
+  letter.style.opacity=1;
+  setPos(seq[0].a,false);apply(seq[0]);
+  seq.slice(1).forEach(function(e,i){
+    var t0=i*GAP+150;
+    timers.push(setTimeout(function(){setPos(e.a,true);},t0));
+    timers.push(setTimeout(function(){apply(e);},t0+DUR));
+  });
+}
+
+var dotsEl=document.getElementById("dots");
+STEPS.forEach(function(s,i){
+  var d=document.createElement("button");
+  d.type="button";d.className="dot"+(i===4?" gap":"");
+  d.setAttribute("aria-label",s.t+": "+s.h);
+  d.onclick=function(){cur=i;draw();};
+  dotsEl.appendChild(d);
+});
+
+function draw(){
+  var s=STEPS[cur];
+  var b=document.getElementById("badge");
+  b.textContent=s.part?"Parte 2 · Casa do colega":"Parte 1 · Dentro de casa";
+  b.className="badge"+(s.part?" p2":"");
+  document.getElementById("stepno").textContent=s.t;
+  document.getElementById("title").textContent=s.h;
+  document.getElementById("text").textContent=s.p;
+  document.getElementById("map").textContent=s.m;
+  var bl=document.getElementById("blocks");bl.textContent="";
+  (s.blocks||[]).forEach(function(x){
+    var w=document.createElement("div");w.className="blk";
+    var l=document.createElement("div");l.className="lbl";l.textContent=x.l;
+    var p=document.createElement("pre");p.className=x.k||"json";p.textContent=x.x;
+    w.appendChild(l);w.appendChild(p);bl.appendChild(w);
+  });
+  document.getElementById("extra").innerHTML=s.extra||"";
+  document.querySelector(".panel").scrollTop=0;
+  scene.dataset.stage=s.stage;scene.dataset.gates=s.gates;
+  scene.querySelectorAll("[data-hl]").forEach(function(el){el.classList.toggle("on",s.on.indexOf(el.getAttribute("data-hl"))>-1);});
+  scene.querySelectorAll(".st").forEach(function(el){el.textContent=s.gates==="open"?"aberto":"fechado";});
+  var bu=document.getElementById("bubble");bu.textContent=s.bubble||"";bu.classList.toggle("show",!!s.bubble);
+  document.querySelectorAll(".part").forEach(function(el){el.classList.toggle("on",+el.getAttribute("data-part")===s.part);});
+  document.querySelectorAll(".dot").forEach(function(el,k){el.classList.toggle("on",k===cur);});
+  var now=document.getElementById("now");now.textContent="";
+  var em=document.createElement("em");em.textContent=s.t;
+  now.appendChild(em);now.appendChild(document.createTextNode(" · "+s.h));
+  document.getElementById("prev").disabled=cur===0;
+  document.getElementById("next").disabled=cur===STEPS.length-1;
+  var open=s.stage!==1;
+  if(lastOpen!==null&&open!==lastOpen&&!reduce){
+    clearTimers();letter.style.opacity=0;
+    timers.push(setTimeout(function(){extra=900;runSeq(s.seq);extra=0;},900));
+  }else{extra=0;runSeq(s.seq);}
+  lastOpen=open;
+  schedule();
+}
+
+document.getElementById("play").onclick=function(){setPlaying(!playing);};
+document.getElementById("prev").onclick=function(){if(cur>0){cur--;draw();}};
+document.getElementById("next").onclick=function(){if(cur<STEPS.length-1){cur++;draw();}};
+document.querySelectorAll(".part").forEach(function(el){el.onclick=function(){cur=el.getAttribute("data-part")==="1"?4:0;draw();};});
+scene.querySelectorAll(".room").forEach(function(el){
+  function go(){cur=+el.getAttribute("data-go");draw();}
+  el.onclick=go;
+  el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}};
+});
+document.addEventListener("keydown",function(e){
+  if(e.target&&e.target.tagName==="INPUT")return;
+  if(e.target&&e.target.closest&&e.target.closest(".room"))return;
+  if(e.key===" "&&e.target===document.body){e.preventDefault();setPlaying(!playing);}
+  if(e.key==="ArrowRight"&&cur<STEPS.length-1){cur++;draw();}
+  if(e.key==="ArrowLeft"&&cur>0){cur--;draw();}
+});
+
+/* reposiciona a carta quando o tamanho da cena muda (girar o celular, redimensionar a janela) */
+var rt,lastSize=scene.offsetWidth+"x"+scene.offsetHeight;
+function onSize(){
+  var sz=scene.offsetWidth+"x"+scene.offsetHeight;
+  if(sz===lastSize)return;
+  lastSize=sz;clearTimeout(rt);
+  rt=setTimeout(function(){runSeq(STEPS[cur].seq);},150);
+}
+if(window.ResizeObserver){new ResizeObserver(onSize).observe(scene);}
+else{window.addEventListener("resize",onSize);}
+window.addEventListener("load",function(){runSeq(STEPS[cur].seq);});
+
+var LAMP='<svg viewBox="0 0 22 28" aria-hidden="true"><path class="cord" d="M11 0v9"/><rect class="sock" x="8" y="9" width="6" height="4.5" rx="1.2"/><circle class="bulb" cx="11" cy="20" r="7"/><path class="fil" d="M8.6 21l1.2-2.4 1.2 2.4 1.2-2.4 1.2 2.4"/></svg>';
+scene.querySelectorAll(".room").forEach(function(r){
+  var l=document.createElement("i");l.className="lamp";l.setAttribute("aria-hidden","true");l.innerHTML=LAMP;r.appendChild(l);
+});
+
+/* dia e noite: clicar no sol ou na lua */
+var orb=document.getElementById("orb"),root=document.documentElement;
+var mq=window.matchMedia?window.matchMedia("(prefers-color-scheme: dark)"):null;
+function isDark(){
+  var a=root.getAttribute("data-theme");
+  return a==="dark"?true:a==="light"?false:!!(mq&&mq.matches);
+}
+function syncOrb(){
+  var n=isDark();
+  orb.setAttribute("data-mode",n?"night":"day");
+  orb.setAttribute("aria-label",n?"Mudar para o dia":"Mudar para a noite");
+}
+function setTheme(t,x,y){
+  function apply(){root.classList.add("tswitch");root.setAttribute("data-theme",t);syncOrb();}
+  if(document.startViewTransition&&!reduce){
+    var rad=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+    var vt=document.startViewTransition(apply);
+    vt.ready.then(function(){
+      root.animate(
+        {clipPath:["circle(0px at "+x+"px "+y+"px)","circle("+rad+"px at "+x+"px "+y+"px)"]},
+        {duration:1000,easing:"cubic-bezier(.65,0,.35,1)",pseudoElement:"::view-transition-new(root)"}
+      );
+    }).catch(function(){});
+    vt.finished.then(function(){root.classList.remove("tswitch");},function(){root.classList.remove("tswitch");});
+  }else{
+    root.classList.add("tfade");
+    apply();
+    root.classList.remove("tswitch");
+    setTimeout(function(){root.classList.remove("tfade");},900);
+  }
+}
+orb.addEventListener("click",function(){
+  var r=orb.getBoundingClientRect();
+  setTheme(isDark()?"light":"dark",r.left+r.width/2,r.top+r.height/2);
+});
+if(mq&&mq.addEventListener)mq.addEventListener("change",syncOrb);
+if(window.MutationObserver)new MutationObserver(syncOrb).observe(root,{attributes:true,attributeFilter:["data-theme"]});
+syncOrb();
+
+var secsEl=document.getElementById("secs");
+try{var sv=parseInt(localStorage.getItem("casa-secs"),10);if(sv>=2&&sv<=30)secs=sv;}catch(err){}
+secsEl.value=secs;
+function applySecs(){
+  var v=parseInt(secsEl.value,10);
+  if(!(v>=2))return;
+  if(v>30)v=30;
+  secs=v;
+  try{localStorage.setItem("casa-secs",String(v));}catch(err){}
+  if(playing)runSeq(STEPS[cur].seq);
+  schedule();
+}
+secsEl.addEventListener("input",applySecs);
+secsEl.addEventListener("change",function(){
+  var v=Math.min(30,Math.max(2,parseInt(secsEl.value,10)||4));
+  secsEl.value=v;applySecs();
+});
+
+syncPlayUI();
+draw();
+})();
+</script>
+</body>
+</html>
